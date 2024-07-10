@@ -13,6 +13,7 @@ Handling timezones can definitely be a tricky issue. For the sake of the project
   + Split up into two different controllers; one for the provider and one for the client.
 + Helper class was introduced to move some of the logic out in order to help with readability and testability.
 + Models represent the different classes/objects the application primarily uses.
++ Majority of business logic within the ReservationService.
 + Appointment = Time slots that are available to the client.
 + Reservation = Time that is booked by a client.
 
