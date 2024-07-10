@@ -3,8 +3,7 @@
 public class ReservationService : IReservationService
 {
     // These private fields below are in memory and should ideally be replaced with an actual DB.
-
-    private readonly Dictionary<int, List<Appointment>> _appointmentSlots = new Dictionary<int, List<Appointment>>(); // Available appointment slots
+    private readonly List<Appointment> _appointmentSlots = new List<Appointment>();
     private readonly List<Reservation> _reservations = new List<Reservation>(); // Reservations made.
 
     private int _appointmentIds = 1;
@@ -12,6 +11,10 @@ public class ReservationService : IReservationService
 
     public async Task<List<Appointment>> GenerateAppointmentSlotsAsync(ProviderAvailability availability)
     {
+        // This is a naive way of creating an appointment (auto incrementing)
+        // Should have also had a way to generate a unique id and make sure the start time and end time wasn't already created.
+        // E.g. There's no use of having two appointments with unique ids but the same start and end time
+        // if the provider "accidentally" entered in the same availability.
         var slots = new List<Appointment>();
         var currentTime = availability.StartTime;
 
@@ -28,26 +31,26 @@ public class ReservationService : IReservationService
 
             currentTime = currentTime.AddMinutes(15);
         }
-        _appointmentSlots[availability.Provider.Id] = [.. slots];
-        return await Task.FromResult(_appointmentSlots[availability.Provider.Id]);
+        _appointmentSlots.AddRange(slots);
+        return await Task.FromResult(_appointmentSlots);
     }
 
     public async Task<List<Appointment>> GetAvailableSlotsAsync(int? providerId = null)
     {
         return await Task.Run(() =>
         {
-            var allSlots = _appointmentSlots.Values.SelectMany(list => list);
+            // var allSlots = _appointmentSlots.Values.SelectMany(list => list);
             // Not the best way to refresh the stale reservations
-            ReservationHelper.RefreshStaleReservations(_reservations, allSlots);
+            ReservationHelper.RefreshStaleReservations(_reservations, _appointmentSlots);
             if (providerId.HasValue)
             {
-                return allSlots
+                return _appointmentSlots
                     .Where(s => s.Provider.Id == providerId.Value && s.IsAvailable)
                     .ToList();
             }
             else
             {
-                return allSlots
+                return _appointmentSlots
                     .Where(s => s.IsAvailable)
                     .ToList();
             }
@@ -56,9 +59,7 @@ public class ReservationService : IReservationService
 
     public async Task<Reservation> ReserveSlotAsync(int slotId, int providerId, string clientName)
     {
-        var slot = _appointmentSlots.Values
-                                    .SelectMany(list => list)
-                                    .FirstOrDefault(slot => slot.Id == slotId && slot.Provider.Id == providerId);
+        var slot = _appointmentSlots.FirstOrDefault(slot => slot.Id == slotId && slot.Provider.Id == providerId);
 
         ReservationHelper.ValidateAppointmentSlot(slot);
         ReservationHelper.ValidateReservationWindow(slot);
