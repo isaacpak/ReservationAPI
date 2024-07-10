@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ReservationAPI;
+﻿namespace ReservationAPI;
 
 public static class ReservationHelper
 {

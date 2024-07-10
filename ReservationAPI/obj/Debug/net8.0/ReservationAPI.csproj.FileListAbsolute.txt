@@ -31,3 +31,4 @@
 /Users/isaacpak/workspace/ReservationAPI/ReservationAPI/obj/Debug/net8.0/ReservationAPI.pdb
 /Users/isaacpak/workspace/ReservationAPI/ReservationAPI/obj/Debug/net8.0/ReservationAPI.genruntimeconfig.cache
 /Users/isaacpak/workspace/ReservationAPI/ReservationAPI/obj/Debug/net8.0/ref/ReservationAPI.dll
+/Users/isaacpak/workspace/ReservationAPI/ReservationAPI/obj/Debug/net8.0/ReservationAPI.sourcelink.json

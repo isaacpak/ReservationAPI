@@ -8,7 +8,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register services
-builder.Services.AddSingleton<IAvailabilityService, AvailabilityService>();
 builder.Services.AddSingleton<IReservationService, ReservationService>();
 
 builder.Services.AddControllers();
